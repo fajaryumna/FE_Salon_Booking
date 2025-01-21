@@ -1,36 +1,69 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Salonku Booking - Frontend
 
-## Getting Started
+Proyek ini adalah aplikasi frontend yang dibangun menggunakan Next.js untuk mengelola pemesanan salon. Berikut adalah panduan untuk mengatur proyek ini.
 
-First, run the development server:
+## Persiapan Lingkungan
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Pastikan Anda telah menginstal hal berikut di sistem Anda:
+- Node.js (v22.11.0)
+  
+## Instruksi Instalasi
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+1. **Clone repository**
+   Buka terminal Anda dan navigasikan ke direktori tempat Anda ingin menyimpan proyek. Clone repository menggunakan perintah berikut:
+   ```bash
+   git clone https://github.com/fajaryumna/FE_Salon_Booking.git
+   ```
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+2. **Masuk ke direktori proyek**
+   ```bash
+   cd FE_Salon_Booking
+   ```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+3. **Instal dependensi**
+   Jalankan perintah berikut untuk menginstal dependensi Node.js yang diperlukan:
+   ```bash
+   npm install
+   ```
 
-## Learn More
+4. **Buat file .env**
+   Buat file `.env` di direktori root proyek dan tambahkan variabel lingkungan berikut:
+   ```env
+   NEXT_PUBLIC_API_URL=http://127.0.0.1:8000/api
+   NEXT_PUBLIC_IMG_URL=http://127.0.0.1:8000
+   ```
 
-To learn more about Next.js, take a look at the following resources:
+5. **Instal library yang diperlukan**
+   Instal library tambahan yang digunakan dalam proyek ini dengan menjalankan perintah berikut:
+   ```bash
+   npm install react-calendar
+   npm install date-fns
+   npm install axios
+   npm i js-cookie
+   npm install date-fns-tz
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+6. **Jalankan server pengembangan**
+   Mulai server pengembangan Next.js dengan perintah:
+   ```bash
+   npm run dev
+   ```
+   Server akan berjalan di `http://localhost:3000` secara default.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Mengakses Aplikasi
 
-## Deploy on Vercel
+1. Buka browser Anda dan akses:
+   ```
+   http://localhost:3000
+   ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+2. Pastikan API backend juga berjalan di `http://127.0.0.1:8000`.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+3. Anda sekarang dapat berinteraksi dengan aplikasi frontend Salonku Booking.
+
+---
+
+### Catatan
+- Pastikan aplikasi backend telah sepenuhnya diatur dan berjalan sebelum memulai frontend.
+- Untuk detail lebih lanjut tentang pengaturan backend, kunjungi [Repository Backend Salonku](https://github.com/fajaryumna/BE_Salon_Booking).
+
