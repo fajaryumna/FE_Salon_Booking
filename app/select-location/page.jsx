@@ -14,6 +14,7 @@ export default function SelectLocation() {
   const [isInitialized, setIsInitialized] = useState(false); // Tambahkan state untuk cek inisialisasi
 
   useEffect(() => {
+    
     const initializeState = async () => {
       // Ambil token
       const token = getToken();
@@ -50,7 +51,7 @@ export default function SelectLocation() {
         console.error("Error fetching locations:", err);
         setError("An error occurred while fetching locations.");
       } finally {
-        setIsInitialized(true); // Tandai inisialisasi selesai
+        setIsInitialized(true);
         setIsLoading(false);
       }
     };
@@ -58,16 +59,11 @@ export default function SelectLocation() {
     initializeState();
   }, []);  
 
-  const handleSelectLocation = (id) => {
+  const handleSelectLocation = (id, name) => {
     setSelectedLocation(id);
+    localStorage.setItem("selectedLocationName", name);
     localStorage.setItem("selectedLocation", id); // Simpan di localStorage
   };
-
-  // if (!isInitialized) {
-  //   // Tampilkan placeholder loading saat data belum siap
-  //   return <div className="text-center mt-10">Loading...</div>;
-  // }
-
 
   return (
     <div className="min-h-screen flex flex-col items-center bg-white font-roboto">
@@ -92,7 +88,7 @@ export default function SelectLocation() {
                     ? "bg-yellow-500 text-white"
                     : "bg-white text-gray-800 border-gray-300"
                 }`}
-                onClick={() => handleSelectLocation(location.id)}
+                onClick={() => handleSelectLocation(location.id, location.name)}
               >
                 <div className="flex items-start">
                   <div
@@ -118,15 +114,11 @@ export default function SelectLocation() {
       {/* Buttons */}
       <div className="w-full p-4 bg-yellow-50">
         <Link
-          href={
-            selectedLocation
-              ? `/select-treatment?location=${selectedLocation}`
-              : "#"
-          }
+          href="select-treatment"
           className={`w-full py-3 rounded-lg shadow-lg flex items-center justify-center font-bold ${
             selectedLocation
               ? "bg-yellow-500 text-white"
-              : "bg-yellow-400 text-yellow-100 cursor-not-allowed"
+              : "bg-yellow-500 text-white opacity-50 cursor-not-allowed"
           }`}
         >
           Select ➔

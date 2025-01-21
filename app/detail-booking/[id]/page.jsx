@@ -3,122 +3,123 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { getToken } from "@/lib/auth";
-import { useRouter } from "next/navigation"; // Perbaiki impor di sini
+import { getToken, removeToken } from "@/lib/auth";
 
-export default function OrderReview() {
+export default function DetailBooking() {
+  const [isInitialized, setIsInitialized] = useState(false); // Tambahkan state untuk cek inisialisasi
   const [orderDetails, setOrderDetails] = useState(null);
-  const router = useRouter();
+  const token = getToken();
 
   useEffect(() => {
-    // Ambil data dari localStorage
-    const treatments = JSON.parse(localStorage.getItem("detailBooking")) || [];
-    const selectedLocationId = localStorage.getItem("selectedLocation");
-    const selectedLocationName = localStorage.getItem("selectedLocationName");
-    const selectedDate = localStorage.getItem("selectedDate");
-    const selectedTime = localStorage.getItem("selectedTime");
-    const customer = JSON.parse(localStorage.getItem("detailCustomer"));
+    const initializeState = async () => {
+      const pathname = window.location.pathname; // Mendapatkan path dari URL
+      const appointmentId = pathname.split("/").pop(); // Ambil ID dari path terakhir
+      console.log(appointmentId);
 
-    // Gabungkan data menjadi satu objek
-    setOrderDetails({
-      treatments,
-    location: selectedLocationName,
-      idLocation: selectedLocationId,
-      date: selectedDate,
-      time: selectedTime,
-      customer,
-    });
-  }, []);
-
-  const handleSubmit = async () => {
-    if (!orderDetails) {
-      alert("Order details not available.");
-      return;
-    }
-
-    const { treatments, idLocation, customer, date, time } = orderDetails;
-
-    // Format data untuk dikirim ke API
-    const data = {
-      branch_id: idLocation,
-      customer_name: customer.name,
-      customer_email: customer.email,
-      customer_phone: customer.phone,
-      date,
-      start_time: time,
-      detail: treatments.map((treatment) => ({
-        treatment_id: treatment.treatmentId,
-        therapist_id: treatment.therapistId,
-      })),
+      if (!token || !appointmentId) {
+        console.error("Token atau appointmentId tidak ditemukan!");
+        return;
+      }
+  
+      try {
+        // Fetch appointment details
+        const response = await axios.get(
+          `${process.env.NEXT_PUBLIC_API_URL}/appointments/${appointmentId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+  
+        if (response.data.success) {
+          const data = response.data.data;
+  
+          // Set order details
+          setOrderDetails({
+            treatments: data.treatments.map((treatment) => ({
+              treatmentName: treatment.treatment_name,
+              categoryName: treatment.treatment_category,
+              therapistName: treatment.therapist_name,
+              price: parseFloat(treatment.price),
+              serviceFee: parseFloat(treatment.service_fee),
+            })),
+            location: data.branch?.name,
+            idLocation: data.branch?.id,
+            date: data.date,
+            time: data.start_time,
+            customer: {
+              name: data.customer_name,
+              phone: data.customer_phone,
+            },
+          });
+        } else {
+          console.error("Error fetching booking details:", response.data.message);
+        }
+      } catch (err) {
+        console.error("Error fetching booking details:", err);
+      }
     };
+  
+    initializeState();
+  }, []);  
 
+  // Hitung total harga
+  const totalPrice = orderDetails
+    ? orderDetails.treatments.reduce(
+        (acc, treatment) => acc + treatment.price + treatment.serviceFee,
+        0
+      )
+    : 0;
+
+  const handleLogout = async () => {
     try {
-
-      console.log(data);
-      // Ambil token dari cookie
-      const token = getToken();
       if (!token) {
         console.error("Token tidak ditemukan!");
         return;
       }
 
-      // Kirim data ke API
-      const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/appointments`,
-        data,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        },
-      );
-
+      // Kirim permintaan logout ke API
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/logout`, {}, {
+        headers: {
+          Authorization: `Bearer ${token}`, 
+        }
+      });
+  
       if (response.status === 200) {
-        //save to local storage
-        const appointmentId = response.data.data.appointment_id;
-        localStorage.setItem("appointmentId", appointmentId);
-
-        alert("Appointment successfully created!");
-
-        // Hapus data dari localStorage
-        localStorage.removeItem("detailBooking");
-        localStorage.removeItem("detailCustomer");
-        localStorage.removeItem("selectedDate");
-        localStorage.removeItem("selectedLocation");
-        localStorage.removeItem("selectedLocationName");
-        localStorage.removeItem("selectedTime");``
-
-        router.push(`/detail-booking/${appointmentId}`);
+        removeToken();
+        // Arahkan ke halaman login
+        window.location.href = "/login";
+      } else {
+        // Tangani jika logout API gagal
+        alert("Failed to logout. Please try again.");
       }
     } catch (error) {
-      console.error("Error creating appointment:", error);
-      alert("Failed to create appointment. Please try again.");
+      // Tangani error dari permintaan API
+      console.error("Logout error:", error);
+      alert("An error occurred while logging out. Please try again.");
     }
   };
 
-  // Hitung total harga
-  const totalPrice = orderDetails?.treatments?.reduce(
-    (acc, treatment) => acc + treatment.price + treatment.serviceFee,
-    0
-  ) || 0;
-
   return (
-    <div className="min-h-screen bg-yellow-500 font-roboto">
+    <div className="min-h-screen bg-white font-roboto">
       {/* Header */}
-      <div className="bg-yellow-500 text-center py-4 relative">
-        <h1 className="text-2xl font-bold text-white">SALONKU</h1>
-        <h1 className="text-2xl font-bold text-white">BOOKING ONLINE</h1>
-      </div>
-  
+      {/* <div className="bg-yellow-500 text-center py-6 relative">
+        <h1 className="text-lg font-bold text-white">SALONKU</h1>
+        <h1 className="text-lg font-bold text-white">BOOKING ONLINE</h1>
+      </div> */}
+
       {/* Main Content */}
-      <div className="bg-white rounded-t-3xl shadow-lg px-6 pt-6 pb-6 relative z-10">
-        <h2 className="text-center text-2xl font-bold text-yellow-700 mb-6">Review</h2>
-  
+      <div className="bg-white rounded-t-3xl px-6 pt-6 pb-6 relative z-10">
+      <div className="flex flex-col items-center justify-center">
+        <span className="text-4xl mb-2">😊</span>
+        <h2 className="text-center text-2xl font-bold text-yellow-700 mb-4">Booking Successfully</h2>
+      </div>
+
         {/* Order Details */}
         {!orderDetails ? (
           <div className="bg-white h-[480px]">
-            <p className="text-center text-gray-500">Loading order details...</p>
+            <p className=" text-center text-gray-500">Loading order details...</p>
           </div>
         ) : (
           <>
@@ -171,7 +172,7 @@ export default function OrderReview() {
                 </p>
               </div>
             </div>
-  
+
             {/* Payment Details */}
             <div className="bg-yellow-50 rounded-2xl shadow-lg p-6">
               <h3 className="text-lg font-semibold text-gray-800 mb-4">Payment Detail</h3>
@@ -184,13 +185,7 @@ export default function OrderReview() {
                 ))}
                 <p className="flex justify-between">
                   <span>Service</span>
-                  <span>
-                    Rp{" "}
-                    {orderDetails.treatments.reduce(
-                      (acc, t) => acc + t.serviceFee,
-                      0
-                    ).toLocaleString()}
-                  </span>
+                  <span>Rp {orderDetails.treatments.reduce((acc, t) => acc + t.serviceFee, 0).toLocaleString()}</span>
                 </p>
                 <hr className="my-2 border-gray-400" />
                 <p className="font-bold text-gray-800 flex justify-between">
@@ -202,22 +197,23 @@ export default function OrderReview() {
           </>
         )}
       </div>
-  
+
       {/* Footer */}
-      <div className="p-6 bg-white">
-        <button
-          onClick={handleSubmit}
+      <div className="p-6 bg-white pt-4">
+        <Link
+          href="/homepage"
           className="w-full bg-yellow-500 text-white font-bold py-3 rounded-lg flex items-center justify-center shadow-lg"
         >
-          Submit
-        </button>
-        <Link
-          href="/preview"
+          Home
+        </Link>
+        <button
+          onClick={handleLogout}
           className="w-full mt-4 bg-white border border-yellow-500 text-yellow-500 font-bold py-3 rounded-lg flex items-center justify-center"
         >
-          Back
-        </Link>
+          Logout
+        </button>
       </div>
     </div>
   );
-}  
+}
+

@@ -4,7 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import { getToken } from "@/lib/auth";
+import Link from "next/link";
 
 export default function Register() {
   const [formData, setFormData] = useState({
@@ -156,9 +156,17 @@ export default function Register() {
           </button>
         </form>
 
+        <p className="text-center text-gray-500 mt-4">
+          Sudah punya akun?{" "}
+          <Link href="/login" className="text-yellow-500 font-semibold hover:underline">
+            Login
+          </Link>
+        </p>
+
         {/* Notifikasi */}
         {error && <p className="text-red-500 text-center mt-4">{error}</p>}
-        {success && <p className="text-green-500 text-center mt-4">{success}</p>}      </div>
+        {success && <p className="text-green-500 text-center mt-4">{success}</p>}      
+        </div>
     </div>
   );
 }
