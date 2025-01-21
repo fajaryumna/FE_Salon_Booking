@@ -6,10 +6,10 @@ Proyek ini adalah aplikasi frontend yang dibangun menggunakan Next.js untuk mela
 
 - Node.js (v22.11.0 atau versi yang lebih tinggi)
   
-## Instalasi
+## Langkah Instalasi
 
 1. **Clone repository**
-   Buka terminal Anda dan navigasikan ke direktori tempat Anda ingin menyimpan proyek. Clone repository menggunakan perintah berikut:
+   Buka terminal Anda dan navigasikan ke direktori tempat Anda ingin menyimpan proyek. Clone repository dengan perintah berikut:
    ```bash
    git clone https://github.com/fajaryumna/FE_Salon_Booking.git
    ```
@@ -26,7 +26,7 @@ Proyek ini adalah aplikasi frontend yang dibangun menggunakan Next.js untuk mela
    ```
 
 4. **Buat file .env**
-   Buat file `.env` di direktori root proyek dan tambahkan variabel berikut sebagai link API dari Laravel :
+   Buat file `.env` di direktori root proyek dan tambahkan variabel ini sebagai link API:
    ```env
    NEXT_PUBLIC_API_URL=http://127.0.0.1:8000/api
    NEXT_PUBLIC_IMG_URL=http://127.0.0.1:8000
