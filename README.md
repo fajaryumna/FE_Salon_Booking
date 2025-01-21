@@ -4,7 +4,6 @@ Proyek ini adalah aplikasi frontend yang dibangun menggunakan Next.js untuk mela
 
 ## Environment
 
-Pastikan Anda telah menginstal hal berikut di sistem Anda:
 - Node.js (v22.11.0 atau versi yang lebih tinggi)
   
 ## Instalasi
