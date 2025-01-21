@@ -3,7 +3,8 @@
 import { useState } from "react";
 import Image from "next/image";
 import axios from "axios";
-import { useRouter } from "next/navigation"; 
+import { useRouter } from "next/navigation";
+import { getToken } from "@/lib/auth";
 
 export default function Register() {
   const [formData, setFormData] = useState({
@@ -53,12 +54,24 @@ export default function Register() {
           }, 3000);
       } else {
         setError(response.data.message || "Registration failed. Please try again.");
-      }
+    }
     } catch (error) {
       console.error("Error:", error);
-      setError(
-        error.response?.data?.message || "An error occurred. Please try again."
-      );
+       // Ambil pesan error dari errors jika tersedia
+        if (error.response?.data?.errors) {
+        const errors = error.response.data.errors;
+
+        // Gabungkan semua pesan error menjadi satu string
+        const errorMessages = Object.keys(errors)
+            .map((field) => `${field}: ${errors[field].join(", ")}`)
+            .join("\n");
+
+            setError(`\n${errorMessages}`);
+        } else {
+            setError(
+            error.response?.data?.message || "An error occurred. Please try again."
+        );
+        }
     } finally {
       setIsSubmitting(false);
     }
