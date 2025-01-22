@@ -123,7 +123,7 @@ export default function SelectDateAndTime() {
         <h1 className="text-2xl font-bold text-yellow-700">Select Date</h1>
       </div>
 
-      <div className="w-full p-6 bg-yellow-50 rounded-t-3xl shadow-lg">
+      <div className="w-full p-6 bg-yellow-50 rounded-t-3xl shadow-lg pb-0">
         <h2 className="text-lg font-bold text-yellow-700 mb-4">Set Appointment</h2>
         <Calendar
           value={selectedDate ? new Date(selectedDate) : null} // Preselect date from localStorage
@@ -134,7 +134,7 @@ export default function SelectDateAndTime() {
         />
       </div>
 
-      <div className="w-full p-6 bg-white shadow-lg bg-yellow-50">
+      <div className="w-full p-6 bg-white shadow-lg bg-yellow-50 pt-0">
         <h2 className="text-lg font-bold text-yellow-700 mb-4">Slot Available</h2>
         <div className="grid grid-cols-3 gap-4">
           {isLoading ? (
@@ -161,7 +161,7 @@ export default function SelectDateAndTime() {
         </div>
       </div>
 
-      <div className="w-full p-4 bg-yellow-50 ">
+      <div className="w-full p-4 bg-yellow-50 pb-10">
         <Link
           href="/select-therapist"
           className={`w-full py-3 rounded-lg shadow-lg flex items-center justify-center font-bold ${
